@@ -194,7 +194,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="bg-light">
-                                    <h6 class="dropdown-header text-center fst-italic" th:text="${'-- ' + @webSecurityUtil.getCurrentUsername() + ' --'}">Dropdown header</h6>
+                                    <h6 class="dropdown-header text-center fst-italic" th:text="${'-- ' + @userDisplayUtil.getDisplayName(@webSecurityUtil.getCurrentUsername()) + ' --'}">Dropdown header</h6>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" th:href="@{/profile/changePassword}" th:text="#{navigation.changePassword}"></a>

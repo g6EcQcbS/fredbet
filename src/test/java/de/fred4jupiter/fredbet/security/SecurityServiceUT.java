@@ -2,6 +2,7 @@ package de.fred4jupiter.fredbet.security;
 
 import de.fred4jupiter.fredbet.common.UnitTest;
 import de.fred4jupiter.fredbet.domain.entity.AppUser;
+import de.fred4jupiter.fredbet.user.AppUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,8 @@ import static org.mockito.Mockito.when;
 @UnitTest
 class SecurityServiceUT {
 
-    private SecurityService securityService = new SecurityService();
+    private final AppUserRepository appUserRepository = Mockito.mock(AppUserRepository.class);
+    private SecurityService securityService = new SecurityService(appUserRepository);
     private SecurityContext originalContext;
 
     @BeforeEach

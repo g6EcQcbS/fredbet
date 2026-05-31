@@ -11,8 +11,13 @@
 						<input type="hidden" th:field="*{userId}" class="form-control" />
 						<div class="mb-3">
 							<label for="username" th:text="#{user.create.username} + ':'" class="form-label"></label>
-							<input id="username" type="text" th:field="*{username}" class="form-control" size="12" maxlength="12" />
+							<input id="username" type="text" th:field="*{username}" class="form-control" />
 							<p class="alert alert-danger field-alert" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username Error</p>
+						</div>
+						<div class="mb-3">
+							<label for="displayName" th:text="#{user.create.displayName} + ':'" class="form-label"></label>
+							<input id="displayName" type="text" th:field="*{displayName}" class="form-control" />
+							<p class="alert alert-danger field-alert" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}">displayName Error</p>
 						</div>
 						<div class="mb-3">
 							<label for="password" th:text="#{user.create.password} + ':'" class="form-label"></label>

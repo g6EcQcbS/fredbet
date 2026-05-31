@@ -41,7 +41,7 @@ public class UserServiceIT {
         // add role
         appUser.addUserGroup(FredBetUserGroup.ROLE_USER_ENTER_RESULTS);
         assertEquals(2, appUser.getRoles().size());
-        userService.updateUser(appUser.getId(), appUser.getRoles(), false);
+        userService.updateUser(appUser.getId(), appUser.getRoles(), false, appUser.getDisplayName());
 
         AppUser foundAppUser = userService.findByUserId(appUser.getId());
         assertNotNull(foundAppUser);

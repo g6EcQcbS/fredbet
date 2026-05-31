@@ -345,4 +345,19 @@
         <addNotNullConstraint tableName="team" columnName="version" columnDataType="int" defaultNullValue="0"/>
     </changeSet>
 
+    <changeSet id="20" author="michael">
+        <addColumn tableName="app_user">
+            <column name="display_name" type="varchar(256)"/>
+        </addColumn>
+        <modifyDataType tableName="app_user" columnName="user_name" newDataType="varchar(256)"/>
+    </changeSet>
+    
+    <changeSet id="21" author="michael">
+        <addColumn tableName="app_user">
+            <column name="sso_user" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

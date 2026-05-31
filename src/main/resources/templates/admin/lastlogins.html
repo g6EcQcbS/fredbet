@@ -12,7 +12,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-6">
-                                    <span th:text="${appUser.username}"></span>
+                                    <span th:text="${@userDisplayUtil.getDisplayName(appUser.username)}"></span>
                                 </div>
                                 <div class="col-6 text-end">
                                     <span th:text="${#temporals.format(appUser.lastLogin, 'yyyy-MM-dd HH:mm')}"></span>

@@ -8,7 +8,7 @@ import de.fred4jupiter.fredbet.security.FredBetPermission;
 import de.fred4jupiter.fredbet.web.WebMessageUtil;
 import de.fred4jupiter.fredbet.web.WebSecurityUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import de.fred4jupiter.fredbet.security.SecurityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -29,19 +29,23 @@ public class ImageUploadController {
     private final WebSecurityUtil webSecurityUtil;
 
     private final ImageCommandMapper imageCommandMapper;
+    
+    private final SecurityService securityService;
 
     ImageUploadController(ImageAdministrationService imageAdministrationService, WebMessageUtil messageUtil,
                           WebSecurityUtil webSecurityUtil,
-                          ImageCommandMapper imageCommandMapper) {
+                          ImageCommandMapper imageCommandMapper,
+                          SecurityService securityService) {
         this.imageAdministrationService = imageAdministrationService;
         this.messageUtil = messageUtil;
         this.webSecurityUtil = webSecurityUtil;
         this.imageCommandMapper = imageCommandMapper;
+        this.securityService = securityService;
     }
 
     @ModelAttribute("availableImages")
-    public List<ImageCommand> availableImages(@AuthenticationPrincipal AppUser currentUser) {
-        return imageCommandMapper.toListOfImageCommand(loadImageMetaData(currentUser));
+    public List<ImageCommand> availableImages() {
+        return imageCommandMapper.toListOfImageCommand(loadImageMetaData(securityService.getCurrentUser()));
     }
 
     private List<ImageMetaData> loadImageMetaData(AppUser currentUser) {
@@ -93,7 +97,9 @@ public class ImageUploadController {
     }
 
     @GetMapping("/delete/{imageKey}")
-    public String deleteImage(@PathVariable String imageKey, RedirectAttributes redirect, @AuthenticationPrincipal AppUser currentUser) {
+    public String deleteImage(@PathVariable String imageKey, RedirectAttributes redirect) {
+        AppUser currentUser = securityService.getCurrentUser();
+
         if (!isAllowedToDeleteImageWithImageKey(currentUser, imageKey)) {
             messageUtil.addErrorMsg(redirect, "image.gallery.msg.delete.perm.denied");
             return REDIRECT_SHOW_PAGE;

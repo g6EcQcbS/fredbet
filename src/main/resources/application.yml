@@ -35,6 +35,8 @@ spring:
   devtools:
     livereload:
       enabled: false
+  session:
+    store-type: none
 
 server:
   tomcat:
@@ -55,7 +57,7 @@ logging:
   level:
     root: "WARN"
     "org.springframework.web": "WARN"
-    "org.springframework.security": "WARN"
+    "org.springframework.security": "DEBUG"
     "de.fred4jupiter.fredbet": "DEBUG"
 
 # -------- fredbet properties ------------------------------------------------------------------------------
@@ -114,3 +116,5 @@ fredbet:
           - PERM_EDIT_IMAGE_GROUP
           - PERM_DOWNLOAD_IMAGES
           - PERM_DELETE_ALL_IMAGES
+  keycloak:
+    enabled: false

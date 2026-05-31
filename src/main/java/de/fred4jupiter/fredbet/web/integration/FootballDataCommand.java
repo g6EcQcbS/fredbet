@@ -3,9 +3,13 @@ package de.fred4jupiter.fredbet.web.integration;
 import de.fred4jupiter.fredbet.integration.Competition;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
+
 import java.util.List;
 
-public class FootballDataCommand {
+public class FootballDataCommand implements Serializable {
+
+	public static final long serialVersionUID = 1L;
 
     private boolean enabled;
 

@@ -54,7 +54,7 @@
                                 <div class="col-6 pe-0">
                                     <span th:replace="~{fragments/profile_image :: profile_image_small_with_popup(${@webSecurityUtil.getUserProfileImageKeyFor(bet.userName)})}"></span>
                                     <div class="mt-1">
-                                        <span class="ms-3" th:text="${bet.userName}"/>
+                                        <span class="ms-3" th:text="${@userDisplayUtil.getDisplayName(bet.userName)}"/>
                                     </div>
                                 </div>
                                 <div class="col-6 text-end">

@@ -2,6 +2,7 @@ package de.fred4jupiter.fredbet.web.login;
 
 import de.fred4jupiter.fredbet.admin.LoginLogoService;
 import de.fred4jupiter.fredbet.image.BinaryImage;
+import de.fred4jupiter.fredbet.security.SecurityService;
 import de.fred4jupiter.fredbet.web.WebMessageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.AuthenticationException;
@@ -22,14 +23,20 @@ public class LoginController {
     private final WebMessageUtil webMessageUtil;
 
     private final LoginLogoService loginLogoService;
+    private final SecurityService securityService;
 
-    public LoginController(WebMessageUtil webMessageUtil, LoginLogoService loginLogoService) {
+    public LoginController(WebMessageUtil webMessageUtil, LoginLogoService loginLogoService, SecurityService securityService) {
         this.webMessageUtil = webMessageUtil;
         this.loginLogoService = loginLogoService;
+        this.securityService = securityService;
     }
 
     @GetMapping
     public String loginPage(Model model) {
+        if (securityService.isUserLoggedIn()) {
+            return "redirect:/matches/upcoming";
+        }
+
         Optional<BinaryImage> bytes = loginLogoService.loadLoginLogo();
         bytes.ifPresent(value -> model.addAttribute("loginLogo", value.getAsBase64()));
         return "login";

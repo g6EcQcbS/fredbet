@@ -21,11 +21,15 @@ public class RuntimeSettingsUtil {
 
     private final boolean h2ConsoleEnabled;
 
+    private final boolean keycloakEnabled;
+
     public RuntimeSettingsUtil(RuntimeSettingsService runtimeSettingsService, PointsConfigService pointsConfigService,
-                               @Value("${spring.h2.console.enabled:false}") boolean h2ConsoleEnabled) {
+                               @Value("${spring.h2.console.enabled:false}") boolean h2ConsoleEnabled,
+                               @Value("${fredbet.keycloak.enabled:false}") boolean keycloakEnabled) {
         this.runtimeSettingsService = runtimeSettingsService;
         this.pointsConfigService = pointsConfigService;
         this.h2ConsoleEnabled = h2ConsoleEnabled;
+        this.keycloakEnabled = keycloakEnabled;
     }
 
     public RuntimeSettings getSettings() {
@@ -38,5 +42,9 @@ public class RuntimeSettingsUtil {
 
     public boolean isH2ConsoleEnabled() {
         return h2ConsoleEnabled;
+    }
+
+    public boolean isKeycloakEnabled() {
+        return keycloakEnabled;
     }
 }

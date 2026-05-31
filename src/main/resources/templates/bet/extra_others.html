@@ -14,7 +14,7 @@
                                 <div class="col-9">
                                     <span th:replace="~{fragments/profile_image :: profile_image_small_with_popup(${@webSecurityUtil.getUserProfileImageKeyFor(extraBet.userName)})}"></span>
                                     <div class="mt-1">
-                                        <span class="ms-3" th:text="${extraBet.userName}"/>
+                                        <span class="ms-3" th:text="${@userDisplayUtil.getDisplayName(extraBet.userName)}"/>
                                     </div>
                                 </div>
                                 <div class="col-3">

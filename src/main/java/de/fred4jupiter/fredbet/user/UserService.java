@@ -104,12 +104,7 @@ public class UserService {
     }
 
     @CacheEvict(cacheNames = CacheNames.CHILD_RELATION, allEntries = true)
-    public AppUser updateUser(Long userId, boolean isChild) {
-        return updateUser(userId, null, isChild);
-    }
-
-    @CacheEvict(cacheNames = CacheNames.CHILD_RELATION, allEntries = true)
-    public AppUser updateUser(Long userId, Set<String> roles, boolean isChild) {
+    public AppUser updateUser(Long userId, Set<String> roles, boolean isChild, String displayName) {
         Assert.notNull(userId, "userId must be given");
         AppUser appUser = appUserRepository.findByUserId(userId);
         if (Validator.isNotEmpty(roles)) {
@@ -117,6 +112,11 @@ public class UserService {
         }
 
         appUser.setChild(isChild);
+        
+        if (displayName != null) {
+            appUser.setDisplayName(displayName.isBlank() ? null : displayName.trim());
+        }
+
         appUserRepository.save(appUser);
         return appUser;
     }
@@ -172,9 +172,9 @@ public class UserService {
     private UserDto toUserDto(AppUser appUser, Map<String, ImageMetaData> map) {
         ImageMetaData userProfileImageMetaData = map.get(appUser.getUsername());
         if (userProfileImageMetaData != null) {
-            return new UserDto(appUser.getId(), appUser.getUsername(), userProfileImageMetaData.getImageKey());
+            return new UserDto(appUser.getId(), appUser.getUsername(), appUser.getDisplayName(), userProfileImageMetaData.getImageKey());
         } else {
-            return new UserDto(appUser.getId(), appUser.getUsername());
+            return new UserDto(appUser.getId(), appUser.getUsername(), appUser.getDisplayName());
         }
     }
 

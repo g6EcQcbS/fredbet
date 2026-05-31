@@ -26,7 +26,7 @@ class FredbetUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final AppUser appUser = this.appUserRepository.findByUsername(username);
+        final AppUser appUser = this.appUserRepository.findByUsername(username.trim().toLowerCase());
         if (appUser == null) {
             throw new UsernameNotFoundException("Could not found user with username=" + username);
         }

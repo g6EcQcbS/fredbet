@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -23,12 +24,23 @@ public class SessionLoginTracker implements ApplicationListener<InteractiveAuthe
 
     @Override
     public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event) {
-        UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
+        Object principal = event.getAuthentication().getPrincipal();
+
+        String username;
+        if (principal instanceof OidcUser oidcUser) {
+            username = oidcUser.getEmail();
+        } else if (principal instanceof UserDetails userDetails) {
+            username = userDetails.getUsername();
+        } else {
+            LOG.warn("Unknown principal type: {}", principal.getClass().getName());
+            return;
+        }
+
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             final String sessionId = requestAttributes.getSessionId();
-            sessionTrackingService.registerLogin(userDetails.getUsername(), sessionId);
-            LOG.info("Login: user={}, sessionId={}", userDetails.getUsername(), sessionId);
+            sessionTrackingService.registerLogin(username, sessionId);
+            LOG.info("Login: user={}, sessionId={}", username, sessionId);
         }
     }
 }

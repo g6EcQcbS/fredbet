@@ -8,7 +8,7 @@ function imageCroppingUpload() {
     var $uploadCrop;
 
     var opts = {
-        viewport: 'original',
+        viewport: { width: 200, height: 200, type: 'square' },
         type: 'canvas',
         enableResize: true,
         enableExif: true,

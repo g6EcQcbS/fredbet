@@ -17,6 +17,11 @@
 						<p class="alert alert-danger field-alert" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</p>
 					</div>
 					<div class="mb-3">
+						<label for="displayName" th:text="#{user.create.displayName} + ':'" class="form-label"></label>
+						<input id="displayName" type="text" th:field="*{displayName}" class="form-control" />
+						<p class="alert alert-danger field-alert" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}">displayName Error</p>
+					</div>
+					<div class="mb-3">
 						<div class="mb-2" th:text="#{user.create.roles} + ':'"></div>
                         <div class="form-check" th:each="role : ${availableRoles}">
                             <input type="hidden" th:field="*{roles}" th:value="${role}" th:if="${@webSecurityUtil.isRoleSelectionDisabledForUser(editUserCommand.username)}"/>

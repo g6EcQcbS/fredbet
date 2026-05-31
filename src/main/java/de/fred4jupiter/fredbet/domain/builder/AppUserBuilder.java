@@ -35,8 +35,18 @@ public class AppUserBuilder {
     }
 
     public AppUserBuilder withUsernameAndPassword(String username, String password) {
-        this.appUser.setUsername(username.trim());
+        this.appUser.setUsername(username.trim().toLowerCase());
         this.appUser.setPassword(password);
+        return this;
+    }
+
+    public AppUserBuilder withDisplayName(String displayname) {
+        this.appUser.setDisplayName(displayname);
+        return this;
+    }
+
+    public AppUserBuilder withSsoUser(boolean ssoUser) {
+        this.appUser.setSsoUser(ssoUser);
         return this;
     }
 

@@ -5,6 +5,7 @@ import de.fred4jupiter.fredbet.domain.builder.AppUserBuilder;
 import de.fred4jupiter.fredbet.props.FredbetProperties;
 import de.fred4jupiter.fredbet.security.FredBetPermission;
 import de.fred4jupiter.fredbet.security.FredBetUserGroup;
+import de.fred4jupiter.fredbet.security.SecurityService;
 import de.fred4jupiter.fredbet.user.UserAdministrationService;
 import de.fred4jupiter.fredbet.user.UserAlreadyExistsException;
 import de.fred4jupiter.fredbet.user.UserNotDeletableException;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -50,14 +50,18 @@ public class UserController {
     private final FredbetProperties fredbetProperties;
 
     private final UserAdministrationService userAdministrationService;
+    
+    private final SecurityService securityService;
 
     public UserController(UserService userService, WebMessageUtil webMessageUtil, WebSecurityUtil webSecurityUtil,
-                          FredbetProperties fredbetProperties, UserAdministrationService userAdministrationService) {
+                          FredbetProperties fredbetProperties, UserAdministrationService userAdministrationService,
+                          SecurityService securityService) {
         this.userService = userService;
         this.webMessageUtil = webMessageUtil;
         this.webSecurityUtil = webSecurityUtil;
         this.fredbetProperties = fredbetProperties;
         this.userAdministrationService = userAdministrationService;
+        this.securityService = securityService;
     }
 
     @ModelAttribute("availableRoles")
@@ -100,6 +104,7 @@ public class UserController {
         EditUserCommand userCommand = new EditUserCommand();
         userCommand.setUserId(appUser.getId());
         userCommand.setUsername(appUser.getUsername());
+        userCommand.setDisplayName(appUser.getDisplayName());
         userCommand.setDeletable(appUser.isDeletable());
         userCommand.setChild(appUser.isChild());
         if (!CollectionUtils.isEmpty(appUser.getAuthorities())) {
@@ -119,9 +124,9 @@ public class UserController {
 
         if (webSecurityUtil.isRoleSelectionDisabledForUser(editUserCommand.getUsername())) {
             LOG.debug("Role selection is disabled for user {}. Do not update roles.", editUserCommand.getUsername());
-            userService.updateUser(editUserCommand.getUserId(), editUserCommand.isChild());
+            userService.updateUser(editUserCommand.getUserId(), null, editUserCommand.isChild(), editUserCommand.getDisplayName());
         } else {
-            userService.updateUser(editUserCommand.getUserId(), editUserCommand.getRoles(), editUserCommand.isChild());
+            userService.updateUser(editUserCommand.getUserId(), editUserCommand.getRoles(), editUserCommand.isChild(), editUserCommand.getDisplayName());
         }
 
         webMessageUtil.addInfoMsg(redirect, "user.edited", editUserCommand.getUsername());
@@ -130,7 +135,9 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('" + FredBetPermission.PERM_DELETE_USER + "')")
     @GetMapping("{id}/delete")
-    public String delete(@PathVariable("id") Long userId, RedirectAttributes redirect, @AuthenticationPrincipal AppUser currentUser) {
+    public String delete(@PathVariable("id") Long userId, RedirectAttributes redirect) {
+        AppUser currentUser = securityService.getCurrentUser();
+
         if (currentUser.getId().equals(userId)) {
             webMessageUtil.addErrorMsg(redirect, "user.deleted.couldNotDeleteOwnUser");
             return REDIRECT_USER_PAGE;
@@ -165,6 +172,7 @@ public class UserController {
             // create new user
             AppUserBuilder appUserBuilder = AppUserBuilder.create()
                     .withUsernameAndPassword(createUserCommand.getUsername(), createUserCommand.getPassword())
+                    .withDisplayName(createUserCommand.getDisplayName())
                     .withIsChild(createUserCommand.isChild()).withFirstLogin(true);
 
             if (webSecurityUtil.isRoleSelectionDisabledForUser(createUserCommand.getUsername())) {

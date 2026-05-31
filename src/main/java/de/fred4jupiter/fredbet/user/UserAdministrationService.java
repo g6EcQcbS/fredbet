@@ -88,14 +88,24 @@ public class UserAdministrationService {
         appUserRepository.save(appUser);
     }
 
+    public void changePasswordForSsoUser(Long userId, String newPassword) {
+        AppUser appUser = appUserRepository.findByUserId(userId);
+        appUser.setPassword(passwordEncoder.encode(newPassword));
+        appUser.setSsoUser(false);
+        securityService.resetFirstLogin(appUser);
+        appUserRepository.save(appUser);
+    }
+
     public void renameUser(String oldUsername, String newUsername) {
+        final String normalizedNewUsername = newUsername.trim().toLowerCase();
+
         if (fredbetProperties.adminUsername().equals(oldUsername)) {
             throw new RenameUsernameNotAllowedException("This user is the default admin user which username cannot be renamed!");
         }
 
-        AppUser foundUser = appUserRepository.findByUsername(newUsername);
+        AppUser foundUser = appUserRepository.findByUsername(normalizedNewUsername);
         if (foundUser != null) {
-            throw new UserAlreadyExistsException("User with username=" + newUsername + " already exists.");
+            throw new UserAlreadyExistsException("User with username=" + normalizedNewUsername + " already exists.");
         }
 
         AppUser userToBeRenamed = appUserRepository.findByUsername(oldUsername);
@@ -104,7 +114,7 @@ public class UserAdministrationService {
             return;
         }
 
-        userToBeRenamed.setUsername(newUsername);
+        userToBeRenamed.setUsername(normalizedNewUsername);
         this.appUserRepository.save(userToBeRenamed);
 
         this.betRepository.renameUser(oldUsername, newUsername);

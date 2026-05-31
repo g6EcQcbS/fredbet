@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.Serializable;
 /**
  * Helper class for preparing messages.
  *
@@ -75,7 +76,10 @@ public class WebMessageUtil {
         return messageSourceUtil.getTeamName(country, teamName, LocaleContextHolder.getLocale());
     }
 
-    public static final class WebMessage {
+    public static final class WebMessage implements Serializable {
+    
+		public static final long serialVersionUID = 1L;
+
         private final String cssClass;
 
         private final String text;

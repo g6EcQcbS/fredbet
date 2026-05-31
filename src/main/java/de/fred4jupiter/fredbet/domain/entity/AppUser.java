@@ -34,8 +34,14 @@ public class AppUser implements UserDetails {
     @Column(name = "ROLE")
     private Set<String> roles;
 
-    @Column(name = "USER_NAME", unique = true, nullable = false)
+    @Column(name = "USER_NAME", unique = true, nullable = false, length = 256)
     private String username;
+
+    @Column(name = "DISPLAY_NAME")
+    private String displayName;
+
+    @Column(name = "SSO_USER")
+    private boolean ssoUser;
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
@@ -109,6 +115,14 @@ public class AppUser implements UserDetails {
         return username;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public boolean isSsoUser() {
+        return ssoUser;
+    }
+
     public Set<String> getRoles() {
         return roles;
     }
@@ -121,6 +135,14 @@ public class AppUser implements UserDetails {
         this.username = username;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+    
+    public void setSsoUser(boolean ssoUser) {
+        this.ssoUser = ssoUser;
+    }
+    
     public void setPassword(String password) {
         this.password = password;
     }

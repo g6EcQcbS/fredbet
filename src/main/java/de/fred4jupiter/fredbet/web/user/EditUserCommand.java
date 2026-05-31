@@ -1,5 +1,7 @@
 package de.fred4jupiter.fredbet.web.user;
 
+import de.fred4jupiter.fredbet.props.FredbetConstants;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +16,11 @@ public class EditUserCommand {
 	private Long userId;
 
 	@NotEmpty
-	@Size(min = 2, max = 12)
+	@Size(min = 2, max = FredbetConstants.USERNAME_MAX_LENGTH)
 	private String username;
+
+	@Size(min = 2, max = FredbetConstants.USERNAME_MAX_LENGTH)
+	private String displayName;
 
 	private boolean deletable;
 
@@ -50,6 +55,14 @@ public class EditUserCommand {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import de.fred4jupiter.fredbet.web.validation.PasswordChangeConstraint;
 @PasswordChangeConstraint(message = "{msg.bet.betting.error.passwordMismatch}")
 public class ChangePasswordCommand {
 
-	@NotEmpty
 	private String oldPassword;
 
 	@NotEmpty

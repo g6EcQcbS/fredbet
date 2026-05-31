@@ -17,6 +17,9 @@ public class CreateUserCommand {
 	@NotEmpty
 	@Size(min = 2, max = FredbetConstants.USERNAME_MAX_LENGTH)
 	private String username;
+	
+	@Size(min = 2, max = FredbetConstants.USERNAME_MAX_LENGTH)
+	private String displayName;
 
 	@NotEmpty
 	@Size(min = 4, max = FredbetConstants.PASSWORD_MAX_LENGTH)
@@ -65,6 +68,14 @@ public class CreateUserCommand {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	@Override
