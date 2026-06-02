@@ -24,22 +24,29 @@ public class ChangePasswordFirstLoginInterceptor implements HandlerInterceptor {
 	}
 
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
 		if (!webSecurityUtil.isChangePasswordOnFirstLogin()) {
-			return;
+			return true;
 		}
 
 		final String requestURI = request.getRequestURI();
 		if (requestURI.contains(CHANGE_PASSWORD_ENDPOINT)) {
-			return;
+			return true;
 		}
 
-		if (webSecurityUtil.isUserLoggedIn() && webSecurityUtil.isUsersFirstLogin()) {
-			// Redirect View verwenden. Message wird nicht angezeigt
-			response.sendRedirect(CHANGE_PASSWORD_ENDPOINT);
-		}
+		if (!response.isCommitted() && webSecurityUtil.isUserLoggedIn() && webSecurityUtil.isUsersFirstLogin()) {
+ 			response.sendRedirect(CHANGE_PASSWORD_ENDPOINT);
+			return false;
+ 		}
+
+		return true;
 	}
 
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+			throws Exception {
+		// redirect is now handled in preHandle
+ 	}
 }

@@ -35,7 +35,13 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
-        registry.addInterceptor(changePasswordFirstLoginInterceptor());
+        registry.addInterceptor(changePasswordFirstLoginInterceptor())
+            .excludePathPatterns(
+                "/css/**", "/js/**", "/webjars/**", "/images/**",
+                "/static/**", "/favicon.ico", "/gallery/showthumb/**",
+                "/flag-icons*/**", "/club-wm-icons*/**", "/fonts/**",
+                "/blueimpgallery/**", "/lightbox/**", "/actuator/**"
+            );
 
         // registry.addInterceptor(new ExecutionTimeInterceptor());
 

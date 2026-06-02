@@ -17,8 +17,9 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.util.Collection;
 import java.util.UUID;
 
@@ -73,6 +74,7 @@ public class KeycloakOAuth2UserService implements OAuth2UserService<OidcUserRequ
         return new DefaultOidcUser(localAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
     }
     
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private UserDetails createUserFromOidc(OidcUser oidcUser, String email) {
         String displayName = resolveDisplayName(oidcUser);
         // Use a random password — SSO users never log in with password

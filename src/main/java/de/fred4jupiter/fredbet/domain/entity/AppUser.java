@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +23,10 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "APP_USER")
-public class AppUser implements UserDetails {
+public class AppUser implements UserDetails, Serializable {
+
+	
+    public static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

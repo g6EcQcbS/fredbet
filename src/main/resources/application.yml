@@ -118,3 +118,8 @@ fredbet:
           - PERM_DELETE_ALL_IMAGES
   keycloak:
     enabled: false
+  scheduler:
+    enabled: true
+
+sentry:
+  dsn: ""
