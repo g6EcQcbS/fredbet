@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import java.io.Serializable;
 
-public class FootballDataRuntimeSettings {
+public class FootballDataRuntimeSettings implements Serializable {
+
+	public static final long serialVersionUID = 1L;
 
     public static final Long ID = 2L;
 

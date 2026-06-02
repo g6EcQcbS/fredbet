@@ -7,13 +7,16 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 
 /**
  * These properties are changable at runtime (via admin page).
  *
  * @author michael
  */
-public class RuntimeSettings {
+public class RuntimeSettings implements Serializable {
+
+	public static final long serialVersionUID = 1L;
 
     private boolean enabledParentChildRanking;
 

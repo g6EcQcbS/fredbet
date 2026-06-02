@@ -3,7 +3,11 @@ package de.fred4jupiter.fredbet.points;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class ExtraPointsConfiguration {
+import java.io.Serializable;
+
+public class ExtraPointsConfiguration implements Serializable {
+
+	public static final long serialVersionUID = 1L;
 
     /**
      * Extra betting points for final winner.

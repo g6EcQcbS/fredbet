@@ -4,8 +4,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.jspecify.annotations.NonNull;
 
-public class PointsConfiguration {
+import java.io.Serializable;
 
+public class PointsConfiguration implements Serializable {
+
+	public static final long serialVersionUID = 1L;
+	
     private ExtraPointsConfiguration extraPointsConfig;
 
     @NotNull
