@@ -8,10 +8,12 @@ import de.fred4jupiter.fredbet.props.FredbetProperties;
 import de.fred4jupiter.fredbet.betting.repository.BetRepository;
 import de.fred4jupiter.fredbet.settings.RuntimeSettingsService;
 import de.fred4jupiter.fredbet.pdf.PdfExportService;
+import de.fred4jupiter.fredbet.user.AppUserRepository;
 import de.fred4jupiter.fredbet.pdf.PdfTableDataBuilder;
 import de.fred4jupiter.fredbet.util.MessageSourceUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,9 +37,12 @@ public class RankingService {
 
     private final FredbetProperties fredbetProperties;
 
+    private final AppUserRepository appUserRepository;
+
     RankingService(BetRepository betRepository, ChildRelationFetcher childRelationFetcher, PdfExportService pdfExportService,
                           MessageSourceUtil messageSourceUtil, RuntimeSettingsService runtimeSettingsService,
-                          SameRankingCollector sameRankingCollector, FredbetProperties fredbetProperties) {
+                          SameRankingCollector sameRankingCollector, FredbetProperties fredbetProperties,
+                          AppUserRepository appUserRepository) {
         this.betRepository = betRepository;
         this.childRelationFetcher = childRelationFetcher;
         this.pdfExportService = pdfExportService;
@@ -45,6 +50,16 @@ public class RankingService {
         this.runtimeSettingsService = runtimeSettingsService;
         this.sameRankingCollector = sameRankingCollector;
         this.fredbetProperties = fredbetProperties;
+        this.appUserRepository = appUserRepository;
+    }
+
+    private void enrichDisplayNames(List<UsernamePoints> rankings) {
+        rankings.forEach(up -> {
+            var user = appUserRepository.findByUsername(up.getUserName());
+            if (user != null && StringUtils.hasText(user.getDisplayName())) {
+                up.setDisplayName(user.getDisplayName());
+            }
+        });
     }
 
     public List<UsernamePoints> calculateCurrentRanking(RankingSelection rankingSelection) {
@@ -105,7 +120,7 @@ public class RankingService {
     }
 
     public byte[] exportBetsToPdf(Locale locale, RankingSelection rankingSelection) {
-        final String title = "FredBet " + messageSourceUtil.getMessageFor("ranking.list.title", locale);
+        final String title = messageSourceUtil.getMessageFor("ranking.list.title", locale);
         PdfTableDataBuilder builder = PdfTableDataBuilder.create()
             .withHeaderColumn("#")
             .withHeaderColumn(messageSourceUtil.getMessageFor("pdf.export.username", locale));
@@ -123,12 +138,13 @@ public class RankingService {
         builder.withTitle(title).withLocale(locale);
 
         final List<UsernamePoints> rankings = calculateCurrentRanking(rankingSelection);
+        enrichDisplayNames(rankings);
         final Map<String, Boolean> relationMap = childRelationFetcher.fetchUserIsChildRelation();
 
         final AtomicInteger rank = new AtomicInteger();
         return pdfExportService.createPdfFileFrom(builder.build(), rankings, (rowContentAdder, row) -> {
             rowContentAdder.addCellContent("" + rank.incrementAndGet());
-            rowContentAdder.addCellContent(row.getUserName());
+            rowContentAdder.addCellContent(row.getDisplayNameOrUsername());
             if (runtimeSettings.isEnabledParentChildRanking()) {
                 Boolean isChild = relationMap.get(row.getUserName());
                 rowContentAdder.addCellContent(isChild ? "X" : "");

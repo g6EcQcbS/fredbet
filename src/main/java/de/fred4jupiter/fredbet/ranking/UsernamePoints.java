@@ -8,6 +8,8 @@ public class UsernamePoints {
 
     private final String userName;
 
+    private String displayName;
+
     // 1. Criteria
     private final Integer totalPoints;
 
@@ -68,6 +70,17 @@ public class UsernamePoints {
 
     public String getUserName() {
         return userName;
+    }
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayNameOrUsername() {
+        return displayName != null && !displayName.isBlank() ? displayName : userName;
     }
 
     @Override
