@@ -8,6 +8,7 @@ import de.fred4jupiter.fredbet.domain.entity.Match;
 import de.fred4jupiter.fredbet.match.MatchRepository;
 import de.fred4jupiter.fredbet.util.MessageSourceUtil;
 import de.fred4jupiter.fredbet.props.FredbetProperties;
+import de.fred4jupiter.fredbet.web.UserDisplayUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,6 +35,9 @@ public class PointCourseServiceUT {
 
     @Mock
     private FredbetProperties fredbetProperties;
+
+    @Mock
+    private UserDisplayUtil userDisplayUtil;
 
     @InjectMocks
     private PointCourseService pointCourseService;
@@ -74,13 +78,15 @@ public class PointCourseServiceUT {
 
         when(matchRepository.findFinishedMatches()).thenReturn(List.of(m1, m2));
 
+        when(userDisplayUtil.getDisplayName(Mockito.anyString())).thenAnswer(inv -> inv.getArgument(0));
+
         ChartData chartData = pointCourseService.reportPointsCourse("user1", Locale.ENGLISH);
 
         assertThat(chartData).isNotNull();
         assertThat(chartData.getLabels()).hasSize(2);
         assertThat(chartData.getDatasets()).hasSize(2);
 
-        // check dataset names contain usernames
+        // dataset labels are resolved via display name; here the resolver echoes the username
         assertThat(chartData.getDatasets().stream().map(ds -> ds.label()).anyMatch(n -> n.equals("user1"))).isTrue();
         assertThat(chartData.getDatasets().stream().map(ds -> ds.label()).anyMatch(n -> n.equals("other"))).isTrue();
 

@@ -24,7 +24,7 @@
 							</thead>
 							<tbody>
 								<tr class="success" th:each="pointCountResult : ${pointsfrequency.list}">
-									<td th:text="${pointCountResult.username}"></td>
+									<td th:text="${pointCountResult.displayNameOrUsername}"></td>
 									<td th:text="${pointCountResult.numberOfPointsCount}"></td>
 								</tr>
 							</tbody>

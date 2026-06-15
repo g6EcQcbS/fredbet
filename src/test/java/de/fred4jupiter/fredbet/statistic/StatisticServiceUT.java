@@ -5,6 +5,7 @@ import de.fred4jupiter.fredbet.common.UnitTest;
 import de.fred4jupiter.fredbet.domain.Country;
 import de.fred4jupiter.fredbet.settings.RuntimeSettings;
 import de.fred4jupiter.fredbet.settings.RuntimeSettingsService;
+import de.fred4jupiter.fredbet.user.AppUserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,6 +27,9 @@ public class StatisticServiceUT {
 
     @Mock
     private RuntimeSettingsService runtimeSettingsService;
+
+    @Mock
+    private AppUserRepository appUserRepository;
 
     @InjectMocks
     private StatisticService statisticService;

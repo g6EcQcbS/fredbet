@@ -12,15 +12,6 @@
                     <span class="" th:classappend="${@teamUtil.cssClassFor(favouriteCountry)}"></span>
                     <span th:text="#{statistics.legend.favouriteCountry}"></span>
 				</div>
-                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-2">
-                    <span class="fas fa-magic" aria-hidden="true"></span> <span th:text="#{statistics.legend.bonusPoints}"></span>
-                </div>
-                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-2">
-                    <span class="fas fa-star" aria-hidden="true"></span> <span th:text="#{statistics.legend.topBetter}"></span>
-                </div>
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-2">
-					<span class="fas fa-lightbulb" aria-hidden="true"></span> <span th:text="#{statistics.legend.flopBetter}"></span>
-				</div>
 			</div>
 
 			<div class="row">
@@ -32,9 +23,7 @@
                                     <span th:replace="~{fragments/profile_image :: profile_image_small_with_popup(${@webSecurityUtil.getUserProfileImageKeyFor(statistic.username)})}"></span>
                                 </div>
                                 <div class="col-10">
-                                    <span th:text="${statistic.username} + ' (' + ${statistic.getSum()} + ') '"></span>
-                                    <span th:if="${statistic.minPointsCandidate}" class="fas fa-lightbulb" aria-hidden="true"></span>
-                                    <span th:if="${statistic.maxPointsCandidate}" class="fas fa-star" aria-hidden="true"></span>
+                                    <span th:text="${statistic.displayNameOrUsername} + ' (' + ${statistic.getSum()} + ') '"></span>
                                 </div>
                             </div>
 					   </div>
@@ -69,19 +58,6 @@
 						   		</table>
 					   	   </div>
 					   </div>
-                       <div class="card-footer bg-light">
-                           <div class="row">
-                               <div th:if="${favouriteCountry != null}" class="col-auto">
-                                   <span class="" th:classappend="${@teamUtil.cssClassFor(statistic.favoriteCountry)}"></span>
-                                   <span th:text="' (' + ${statistic.pointsFavoriteCountry} + ')'"></span>
-                                   <span th:if="${statistic.maxFavoriteCountryCandidate}" class="fas fa-star" aria-hidden="true"></span>
-                               </div>
-                               <div class="col-auto">
-                                   <span class="fas fa-magic" aria-hidden="true"></span>
-                                   <span th:text="'(' + ${statistic.getPointsForExtraBets()} + ')'"></span>
-                               </div>
-                           </div>
-                       </div>
 					</div>
 				</div>
 			</div>

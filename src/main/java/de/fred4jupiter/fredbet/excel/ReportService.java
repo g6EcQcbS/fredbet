@@ -12,6 +12,7 @@ import de.fred4jupiter.fredbet.ranking.RankingService;
 import de.fred4jupiter.fredbet.ranking.UsernamePoints;
 import de.fred4jupiter.fredbet.util.DateUtils;
 import de.fred4jupiter.fredbet.util.MessageSourceUtil;
+import de.fred4jupiter.fredbet.web.UserDisplayUtil;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.springframework.data.domain.Sort;
@@ -39,9 +40,11 @@ public class ReportService {
 
     private final FredbetProperties fredbetProperties;
 
+    private final UserDisplayUtil userDisplayUtil;
+
     ReportService(ExcelExportService excelExportService, BetRepository betRepository, ExtraBetRepository extraBetRepository,
                   MessageSourceUtil messageSourceUtil, MatchRepository matchRepository, RankingService rankingService,
-                  FredbetProperties fredbetProperties) {
+                  FredbetProperties fredbetProperties, UserDisplayUtil userDisplayUtil) {
         this.excelExportService = excelExportService;
         this.betRepository = betRepository;
         this.extraBetRepository = extraBetRepository;
@@ -49,6 +52,7 @@ public class ReportService {
         this.matchRepository = matchRepository;
         this.rankingService = rankingService;
         this.fredbetProperties = fredbetProperties;
+        this.userDisplayUtil = userDisplayUtil;
     }
 
     public byte[] exportBetsToExcel(final Locale locale) {
@@ -142,7 +146,8 @@ public class ReportService {
 
         final List<PointCountResult> resultList = this.betRepository.countNumberOfPointsByUser(fredbetProperties.adminUsername());
         for (PointCountResult pointCountResult : resultList) {
-            map.put(pointCountResult.points(), pointCountResult);
+            PointCountResult enriched = pointCountResult.withDisplayName(userDisplayUtil.getDisplayName(pointCountResult.username()));
+            map.put(enriched.points(), enriched);
         }
 
         return map;

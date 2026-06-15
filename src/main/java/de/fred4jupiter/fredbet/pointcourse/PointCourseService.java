@@ -5,6 +5,7 @@ import de.fred4jupiter.fredbet.domain.entity.Match;
 import de.fred4jupiter.fredbet.match.MatchRepository;
 import de.fred4jupiter.fredbet.props.FredbetProperties;
 import de.fred4jupiter.fredbet.util.MessageSourceUtil;
+import de.fred4jupiter.fredbet.web.UserDisplayUtil;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,15 @@ public class PointCourseService {
 
     private final String adminUsername;
 
-    public PointCourseService(BetRepository betRepository, MessageSourceUtil messageSourceUtil, MatchRepository matchRepository, FredbetProperties fredbetProperties) {
+    private final UserDisplayUtil userDisplayUtil;
+
+    public PointCourseService(BetRepository betRepository, MessageSourceUtil messageSourceUtil, MatchRepository matchRepository,
+                              FredbetProperties fredbetProperties, UserDisplayUtil userDisplayUtil) {
         this.betRepository = betRepository;
         this.messageSourceUtil = messageSourceUtil;
         this.matchRepository = matchRepository;
         this.adminUsername = fredbetProperties.adminUsername();
+        this.userDisplayUtil = userDisplayUtil;
     }
 
     public ChartData reportPointsCourse(String username, Locale locale) {
@@ -61,7 +66,7 @@ public class PointCourseService {
             }
         }));
 
-        return pointCourseContainer.createChartData();
+        return pointCourseContainer.createChartData(userDisplayUtil::getDisplayName);
     }
 
     private Optional<PointCourseResult> getFor(Match match, String user, List<PointCourseResult> pointCourseResultList) {

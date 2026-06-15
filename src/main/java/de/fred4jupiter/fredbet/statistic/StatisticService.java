@@ -5,7 +5,9 @@ import de.fred4jupiter.fredbet.domain.Country;
 import de.fred4jupiter.fredbet.domain.entity.ExtraBet;
 import de.fred4jupiter.fredbet.settings.RuntimeSettings;
 import de.fred4jupiter.fredbet.settings.RuntimeSettingsService;
+import de.fred4jupiter.fredbet.user.AppUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,11 +21,14 @@ public class StatisticService {
 
     private final RuntimeSettingsService runtimeSettingsService;
 
+    private final AppUserRepository appUserRepository;
+
     public StatisticService(StatisticRepository statisticRepository, RuntimeSettingsService runtimeSettingsService,
-                            ExtraBetRepository extraBetRepository) {
+                            ExtraBetRepository extraBetRepository, AppUserRepository appUserRepository) {
         this.statisticRepository = statisticRepository;
         this.runtimeSettingsService = runtimeSettingsService;
         this.extraBetRepository = extraBetRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     public Country getFavouriteCountry() {
@@ -46,6 +51,8 @@ public class StatisticService {
 
         for (Statistic statistic : statisticList) {
             statistic.setFavoriteCountry(favouriteCountry);
+
+            enrichDisplayName(statistic);
 
             final Integer favoriteCountryPoints = favoriteCountryPointsPerUserMap.get(statistic.getUsername());
             if (favoriteCountryPoints != null) {
@@ -72,6 +79,13 @@ public class StatisticService {
 
         statisticList.sort(Comparator.comparing(Statistic::getUsername, String.CASE_INSENSITIVE_ORDER));
         return statisticList;
+    }
+
+    private void enrichDisplayName(Statistic statistic) {
+        var user = appUserRepository.findByUsername(statistic.getUsername());
+        if (user != null && StringUtils.hasText(user.getDisplayName())) {
+            statistic.setDisplayName(user.getDisplayName());
+        }
     }
 
     private StatisticAgg calculateMinMax(List<Statistic> statisticList) {

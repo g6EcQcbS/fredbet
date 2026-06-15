@@ -5,6 +5,7 @@ import de.fred4jupiter.fredbet.util.MessageSourceUtil;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 class PointCourseContainer {
 
@@ -47,9 +48,9 @@ class PointCourseContainer {
         return new ArrayList<>(this.matchLabels);
     }
 
-    public ChartData createChartData() {
+    public ChartData createChartData(Function<String, String> usernameToLabel) {
         ChartData chartData = new ChartData(this.getLabels());
-        iteratePointsPerUser(chartData::addDataSet);
+        iteratePointsPerUser((username, values) -> chartData.addDataSet(usernameToLabel.apply(username), values));
         return chartData;
     }
 }
